@@ -5,40 +5,49 @@
 //  Created by Tayip on 3.09.2023.
 //
 #include <stdio.h>
+#include <math.h>
 #include <time.h>
 
-long long int perfect_zahlen(int th_number) {
-    long long int i = 1;
-    int number = 0;
-    for(i = 1;number != th_number; ++i){
-        long long int gesamt = 0;
-        for(long long int j = 1;j <= i; ++j){
-            if(i % j == 0){
-                gesamt += j;
-            }
-        }
-        if(2 * i == gesamt){
-            number++;
-        }
-        if(number == th_number){
-            break;
-        }
-       
+// İkili üs alma işlemi
+long long int power(int base, int exponent) {
+    long long int result = 1;
+    for (int i = 0; i < exponent; i++) {
+        result *= base;
     }
-    return i;
+    return result;
+}
+
+int is_prime(long long int number) {
+    if (number <= 1) {
+        return 0;
+    }
+    for (int i = 2; i <= sqrt(number); i++) {
+        if (number % i == 0) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 int main(void) {
     clock_t start = clock();
-    int zahl;
-    printf("Geben Sie bitte eine Zahl um perfekte Zahl zu berechnen:\n");
-    (void)scanf("%d",&zahl);
-    if(zahl > 9){
-        printf("Die eingegebene Zahl überschreitet den Typ long long int.\n");
-        return -1;
+    int nth_number;
+    printf("Kaçıncı mükemmel sayıyı hesaplamak istersiniz: ");
+    scanf("%d", &nth_number);
+
+    int count = 0;
+    int candidate = 2;
+    while (count < nth_number) {
+        long long int mersenne = power(2, candidate) - 1;
+        if (is_prime(mersenne)) {
+            // Mersenne asal bulundu, mükemmel sayıyı hesapla
+            long long int perfect = power(2, candidate - 1) * mersenne;
+            printf("%d. mükemmel sayı: %lld\n", count + 1, perfect);
+            count++;
+        }
+        candidate++;
     }
-    printf("Die suchende Zahl ist gleich:%lld \n" ,perfect_zahlen(zahl));
     clock_t end = clock();
-    printf("Die Zeit für die Programmierung: %f sekunde\n", (double)(end - start) / CLOCKS_PER_SEC);
+    printf("Programlma icin harcanan süre: %f saniye\n", (double)(end - start) / CLOCKS_PER_SEC);
     return 0;
 }
